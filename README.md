@@ -7,12 +7,12 @@ Create a new instance of FT and Connector. Connector accepts token of your proje
 
 In the place where a failure occur, send the failure to the [failtracker.com](http://failtracker.com).
 
-    ft.report(new Failure("Failed to load important data", "Detailed information about the failure"))
+    ft.send(new Failure("Failed to load important data", "Detailed information about the failure"))
 
 Or, if it makes sense, send the failure from the catch block:
 
     try {
         // here the app fails and we must be notified about it
     } catch (Exception e) {
-        ft.report(new Failure(e))
+        ft.send(new Failure(e))
     }
