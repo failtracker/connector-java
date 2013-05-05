@@ -20,7 +20,7 @@ public class Connector {
     private boolean debug = false;
 
     public Connector(final String apiKey) {
-        this.url = "http://failtracker-rest.herokuapp.com/insert/fail";
+        this.url = "http://failtracker-rest.herokuapp.com/fail/insert";
         this.apiKey = apiKey;
     }
 
