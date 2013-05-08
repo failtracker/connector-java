@@ -9,6 +9,10 @@ public class FT {
 
     private Connector connector;
 
+    public FT(String projectToken) {
+        this.connector = new Connector(projectToken);
+    }
+
     public FT(Connector connector) {
         this.connector = connector;
     }
