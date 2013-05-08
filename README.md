@@ -6,7 +6,7 @@ Add a dependency to pom.xml:
     <dependency>
         <groupId>com.failtracker</groupId>
         <artifactId>connector-java</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5</version>
     </dependency>
 
 And the repository where this dependency is available:
