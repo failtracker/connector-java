@@ -29,7 +29,8 @@ public class Connector {
         this.apiKey = apiKey;
     }
 
-    public void send(final Failure failure) throws ConnectorException {
+    public Response send(final Failure failure) throws ConnectorException {
+        Response res;
         String input = failure.asJson(new Date(), apiKey);
         try {
             if (debug) {
@@ -44,9 +45,12 @@ public class Connector {
             OutputStream os = conn.getOutputStream();
             os.write(input.getBytes());
             os.flush();
+            String responseMessage = conn.getResponseMessage();
+            int responseCode = conn.getResponseCode();
+            res = new Response(responseCode, responseMessage);
             if (debug) {
-                System.out.println(conn.getResponseCode());
-                System.out.println(conn.getResponseMessage());
+                System.out.println(responseCode);
+                System.out.println(responseMessage);
             }
             conn.disconnect();
         } catch (MalformedURLException e) {
@@ -54,6 +58,7 @@ public class Connector {
         } catch (IOException e) {
             throw new ConnectorException(e);
         }
+        return res;
     }
 
     public String getUrl() {

@@ -17,12 +17,16 @@ public class FT {
         this.connector = connector;
     }
 
-    public void send(Failure f) {
+    public Response send(Failure f) {
         try {
-            connector.send(f);
+            Response send = connector.send(f);
+            return send;
         } catch (ConnectorException e) {
-            // TODO: maybe callback to error handler would be nice solution?
-            e.printStackTrace();
+            return new Response(e);
         }
+    }
+
+    public void setDebug(boolean debug) {
+        connector.setDebug(debug);
     }
 }
