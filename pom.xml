@@ -6,7 +6,7 @@
 
     <groupId>com.failtracker</groupId>
     <artifactId>connector-java</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.7</version>
 
     <repositories>
         <repository>

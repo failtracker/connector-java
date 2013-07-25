@@ -6,7 +6,7 @@ Add a dependency to pom.xml:
     <dependency>
         <groupId>com.failtracker</groupId>
         <artifactId>connector-java</artifactId>
-        <version>0.0.5</version>
+        <version>0.0.7</version>
     </dependency>
 
 And the repository where this dependency is available:
@@ -19,11 +19,11 @@ And the repository where this dependency is available:
 The same for Grails:
 
     mavenRepo "http://qiiip.org/mavenRepo/"
-    runtime 'com.failtracker:connector-java:0.0.4'
+    runtime 'com.failtracker:connector-java:0.0.7'
 
 Create a new instance of FT and Connector. Connector accepts token of your project from [failtracker.com](http://failtracker.com).
 
-    FT ft = new FT(new Connector("[project token]"))
+    FT ft = new FT("[project token]")
 
 In the place where a failure occur, send the failure to the [failtracker.com](http://failtracker.com).
 
