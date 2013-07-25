@@ -51,13 +51,8 @@ public class Failure {
     }
 
     public String asJson(Date now, String apiKey) {
-        content = JsonEscaper.escape(title);
-        if (title.length() >= 256) {
-            String substring = title.substring(0, 256);
-            title = JsonEscaper.escape(substring);
-        } else {
-            title = JsonEscaper.escape(title);
-        }
+        content = JsonEscaper.escape(content);
+        title = JsonEscaper.escape(title);
         String json = "{" +
                 "\"title\":" + title + "," +
                 "\"content\":" + content + "," +
