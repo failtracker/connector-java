@@ -10,6 +10,8 @@ import java.util.logging.Logger;
  */
 public class FT {
 
+    private static Logger logger = Logger.getLogger(FT.class.getName());
+
     private Connector connector;
 
     public FT(String projectToken) {
@@ -26,6 +28,16 @@ public class FT {
             return send;
         } catch (ConnectorException e) {
             return new Response(e);
+        }
+    }
+
+    public void send(Failure f, ResponseCallback responseCallback) {
+        try {
+            connector.send(f, responseCallback);
+        } catch (ConnectorException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            Response response = new Response(e);
+            responseCallback.response(response);
         }
     }
 

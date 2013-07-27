@@ -19,8 +19,12 @@ public class Connector {
 
     private static Logger logger = Logger.getLogger(Connector.class.getName());
 
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
+
     private String url;
     private String apiKey;
+
+    private ResponseCallback responseCallback;
 
     private Level loggingLevel;
 
@@ -34,14 +38,23 @@ public class Connector {
         this.apiKey = apiKey;
     }
 
+    public void send(final Failure failure, ResponseCallback responseCallback) throws ConnectorException {
+        this.responseCallback = responseCallback;
+        send(failure);
+    }
+
     public Response send(final Failure failure) throws ConnectorException {
         Response response = new Response(-1, "Response is not filled in, something went wrong. Try to browse the exception from the response.");
-        ExecutorService executor = Executors.newFixedThreadPool(1);
         try {
             String data = failure.asJson(new Date(), apiKey);
             Request request = new Request(new URL(url), data);
+            if (responseCallback != null) {
+                request.setResponseCallback(responseCallback);
+            }
             Future<Response> future = executor.submit(request);
-            response = future.get();
+            if (responseCallback == null) {
+                response = future.get();
+            }
         } catch (MalformedURLException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ConnectorException(e);
@@ -51,8 +64,6 @@ public class Connector {
         } catch (ExecutionException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ConnectorException(e);
-        } finally {
-            executor.shutdown();
         }
         return response;
     }

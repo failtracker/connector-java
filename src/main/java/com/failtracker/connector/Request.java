@@ -19,6 +19,9 @@ public class Request implements Callable<Response> {
     private URL url;
     private String data;
 
+    private ResponseCallback responseCallback;
+
+
     public Request(URL url, String data) {
         this.url = url;
         this.data = data;
@@ -29,7 +32,6 @@ public class Request implements Callable<Response> {
 
         if (logger.isLoggable(Level.INFO)) {
             logger.info("Sending failure JSON data: " + data);
-            logger.info("to " + url);
         }
 
         Response response;
@@ -42,6 +44,9 @@ public class Request implements Callable<Response> {
             conn.setRequestProperty("Content-Type", "application/json");
             os = conn.getOutputStream();
             os.write(data.getBytes());
+            if (logger.isLoggable(Level.INFO)) {
+                logger.info(conn.getURL().toString());
+            }
             os.flush();
             String responseMessage = conn.getResponseMessage();
             int responseCode = conn.getResponseCode();
@@ -61,6 +66,13 @@ public class Request implements Callable<Response> {
                 os.close();
             }
         }
+        if (responseCallback != null) {
+            responseCallback.response(response);
+        }
         return response;
+    }
+
+    public void setResponseCallback(ResponseCallback responseCallback) {
+        this.responseCallback = responseCallback;
     }
 }
