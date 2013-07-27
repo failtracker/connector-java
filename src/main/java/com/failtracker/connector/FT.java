@@ -1,5 +1,8 @@
 package com.failtracker.connector;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Enables to send failures to FailTracker REST API.
  *
@@ -26,7 +29,8 @@ public class FT {
         }
     }
 
-    public void setDebug(boolean debug) {
-        connector.setDebug(debug);
+    public void setLoggingLevel(Level level) {
+        Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+        globalLogger.setLevel(level);
     }
 }

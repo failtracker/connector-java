@@ -11,13 +11,13 @@ public class Response {
     private String message;
     private Exception exception;
 
-    public Response(Exception e) {
-        this.exception = e;
-    }
-
     public Response(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public Response(Exception e) {
+        this.exception = e;
     }
 
     public int getCode() {

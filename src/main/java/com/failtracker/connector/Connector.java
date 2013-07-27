@@ -1,11 +1,14 @@
 package com.failtracker.connector;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Connects Java code with FailTracker.com REST service. It enables sending fails to failtracker.com.
@@ -14,13 +17,15 @@ import java.util.Date;
  */
 public class Connector {
 
+    private static Logger logger = Logger.getLogger(Connector.class.getName());
+
     private String url;
     private String apiKey;
 
-    private boolean debug = false;
+    private Level loggingLevel;
 
     public Connector(final String apiKey) {
-        this.url = "http://failtracker-rest.herokuapp.com/fail/insert";
+        this.url = "http://rest.failtracker.com/fail/insert";
         this.apiKey = apiKey;
     }
 
@@ -30,35 +35,26 @@ public class Connector {
     }
 
     public Response send(final Failure failure) throws ConnectorException {
-        Response res;
-        String input = failure.asJson(new Date(), apiKey);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Response response = new Response(-1, "Response is not filled in, something went wrong. Try to browse the exception in the response.");
         try {
-            if (debug) {
-                System.out.println("Sending failure to " + url);
-                System.out.println(" JSON: " + input);
-            }
-            URL url = new URL(this.url);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            OutputStream os = conn.getOutputStream();
-            os.write(input.getBytes());
-            os.flush();
-            String responseMessage = conn.getResponseMessage();
-            int responseCode = conn.getResponseCode();
-            res = new Response(responseCode, responseMessage);
-            if (debug) {
-                System.out.println(responseCode);
-                System.out.println(responseMessage);
-            }
-            conn.disconnect();
+            String data = failure.asJson(new Date(), apiKey);
+            Request request = new Request(new URL(url), data);
+            Future<Response> future = executor.submit(request);
+            response = future.get();
         } catch (MalformedURLException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ConnectorException(e);
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
             throw new ConnectorException(e);
+        } catch (ExecutionException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            throw new ConnectorException(e);
+        } finally {
+            executor.shutdown();
         }
-        return res;
+        return response;
     }
 
     public String getUrl() {
@@ -77,11 +73,11 @@ public class Connector {
         this.apiKey = apiKey;
     }
 
-    public boolean isDebug() {
-        return debug;
+    public Level getLoggingLevel() {
+        return loggingLevel;
     }
 
-    public void setDebug(boolean debug) {
-        this.debug = debug;
+    public void setLoggingLevel(Level loggingLevel) {
+        this.loggingLevel = loggingLevel;
     }
 }
