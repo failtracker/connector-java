@@ -35,8 +35,8 @@ public class Connector {
     }
 
     public Response send(final Failure failure) throws ConnectorException {
+        Response response = new Response(-1, "Response is not filled in, something went wrong. Try to browse the exception from the response.");
         ExecutorService executor = Executors.newFixedThreadPool(1);
-        Response response = new Response(-1, "Response is not filled in, something went wrong. Try to browse the exception in the response.");
         try {
             String data = failure.asJson(new Date(), apiKey);
             Request request = new Request(new URL(url), data);

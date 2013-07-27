@@ -29,6 +29,10 @@ public class FT {
         }
     }
 
+    public Connector getConnector() {
+        return this.connector;
+    }
+
     public void setLoggingLevel(Level level) {
         Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
         globalLogger.setLevel(level);

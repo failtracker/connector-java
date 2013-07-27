@@ -28,8 +28,8 @@ public class Request implements Callable<Response> {
     public Response call() throws Exception {
 
         if (logger.isLoggable(Level.INFO)) {
-            logger.info("Sending failure to " + url);
-            logger.info(" JSON: " + data);
+            logger.info("Sending failure JSON data: " + data);
+            logger.info("to " + url);
         }
 
         Response response;
